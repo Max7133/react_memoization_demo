@@ -28,18 +28,24 @@ const ShowAllPosts = ({ expandPosts, onAllPostsToggle }) => {
   return (
     <div>
       <h2>{expandPosts.title}</h2>
-      <button onClick={() => setAllPosts((s) => !s)}>
+      <button
+        className="bg-orange-600 text-white py-2 px-4 mt-4 mb-6 rounded-md hover:bg-orange-700 focus:outline-none focus:shadow-outline-orange self-end"
+        onClick={() => setAllPosts((s) => !s)}
+      >
         {allPosts ? 'Hide all posts' : 'Show all posts'}
       </button>
-
       {allPosts && (
         <ul>
           {posts.map((post, i) => (
-            <li key={i}>
-              <p>
-                <strong>{post.title}:</strong> {post.body}
+            <li
+              key={i}
+              className="border rounded-md p-4 mb-4 bg-white border-orange-300"
+            >
+              <h3 className="text-lg font-bold">{post.title}</h3>
+              <p className="text-gray-800">{post.body}</p>
+              <p className="text-orange-500">
+                Created at: {post.createdAt.toLocaleString()}
               </p>
-              <p>Created at: {post.createdAt.toLocaleString()}</p>
             </li>
           ))}
         </ul>

@@ -25,18 +25,26 @@ const Form = ({ onAddPost }) => {
   };
 
   return (
-    <form onSubmit={handlePostSubmit}>
+    <form onSubmit={handlePostSubmit} className="flex flex-col mb-2">
+      <h2 className="text-l font-bold mb-2">Add a New Post</h2>
       <input
+        className="border rounded-md py-2 px-3 mb-2 focus:outline-none focus:border-orange-500"
         value={newPostTitle}
         onChange={(e) => setNewPostTitle(e.target.value)}
         placeholder="Title"
       />
       <textarea
+        className="border rounded-md py-2 px-3 mb-2 focus:outline-none focus:border-orange-500"
         value={newPostBody}
         onChange={(e) => setNewPostBody(e.target.value)}
         placeholder="Body"
       />
-      <button type="submit">Add post</button>
+      <button
+        className="bg-orange-600 text-white py-2 px-4 rounded-md hover:bg-orange-700 focus:outline-none focus:shadow-outline-orange self-end"
+        type="submit"
+      >
+        Add post
+      </button>
     </form>
   );
 };

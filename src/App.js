@@ -109,7 +109,7 @@ const App = () => {
   const expandPosts = useMemo(
     () => ({
       render: false,
-      title: 'Show all posts',
+      title: <span className="text-l font-bold">Entire Post Collection</span>,
     }),
     [] // ensures that this memoized Object is created only once
   );
@@ -138,32 +138,41 @@ const App = () => {
   ///////////////////////////////////////////////////////////
 
   return (
-    <div>
-      <h2>Current Time: {currentTime.toLocaleTimeString()}</h2>
-      <header>
-        <h1>Posts Search App</h1>
-        <div>
-          {/* for useCallback I show numberOfPosts from useState */}
-          <p>There are {numberOfPosts || results.length} posts found</p>
-          <input
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search posts"
-          />
-        </div>
-      </header>
-      <div>
+    <div className="flex-col min-h-screen bg-gray-200">
+      <div className="max-w-screen-lg mx-auto p-4 bg-gray-100">
+        <header className="flex justify-between items-center">
+          <h1 className="text-4xl font-bold mb-4">Posts Search App</h1>
+          <div className="flex flex-col items-end">
+            <h2 className="text-lg font-bold">
+              Current Time: {currentTime.toLocaleTimeString()}
+            </h2>
+            {/* for useCallback I show numberOfPosts from useState */}
+            <p className="text-l font-bold mb-2">
+              There are{' '}
+              <span className="text-orange-600 text-l font-bold">
+                {numberOfPosts || results.length}
+              </span>{' '}
+              posts found
+            </p>
+            <input
+              className="border rounded-md py-2 px-3 mt-4 focus:outline-none focus:border-orange-500"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search posts"
+            />
+          </div>
+        </header>
         <Form onAddPost={handleAddCustomPost} />
-      </div>
-      <div>
         <PostsList posts={results} />
+        {/* for useCallback added onAllPostsToggle from Memoized handleAllPostsToggle */}
+        <ShowAllPosts
+          expandPosts={expandPosts}
+          onAllPostsToggle={handleAllPostsToggle}
+        />
       </div>
-      {/* for useCallback added onAllPostsToggle from Memoized handleAllPostsToggle */}
-      <ShowAllPosts
-        expandPosts={expandPosts}
-        onAllPostsToggle={handleAllPostsToggle}
-      />
-      <footer>Posts Search App</footer>
+      <footer className="p-1 bg-gray-800 text-white text-center fixed bottom-0 w-full">
+        Posts Search App
+      </footer>
     </div>
   );
 };
