@@ -17,10 +17,6 @@ const ShowAllPosts = ({ expandPosts, onAllPostsToggle }) => {
   const [allPosts, setAllPosts] = useState(expandPosts.render);
 
   useEffect(() => {
-    setAllPosts(expandPosts.render);
-  }, [expandPosts.render]);
-
-  useEffect(() => {
     // Notify the parent component about the post count when it changes
     onAllPostsToggle(allPosts ? posts.length : allPosts.length);
   }, [onAllPostsToggle, allPosts, posts]);

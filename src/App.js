@@ -8,7 +8,7 @@ const App = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentTime, setCurrentTime] = useState(new Date());
   const [addPosts, setAddPosts] = useState(() =>
-    Array.from({ length: 20 }, () => ({
+    Array.from({ length: 5 }, () => ({
       ...generateRandomPost(),
       createdAt: new Date(),
     }))
@@ -65,8 +65,6 @@ const App = () => {
       },
       ...prevPosts,
     ]);
-
-    setNumberOfPosts((prev) => prev + 1); // add + 1 for every custom post 
   }; */
 
   ////////////////////////////////////////////////////////////
@@ -87,9 +85,8 @@ const App = () => {
         },
         ...prevPosts,
       ]);
-      setNumberOfPosts((prev) => prev + 1); // add + 1 for every custom post
     },
-    [] // I don't need "setAddPosts" and "setNumberOfPosts" in the dependency Array, because these state setter functions are stable between renders
+    [] // Omitting "setAddPosts" from the dependency array because the state setter functions are stable between renders
   );
 
   ////////////////////////////////////////////////////////////
@@ -150,7 +147,7 @@ const App = () => {
             <p className="text-l font-bold mb-2">
               There are{' '}
               <span className="text-orange-600 text-l font-bold">
-                {numberOfPosts || results.length}
+                {numberOfPosts + results.length || results.length}
               </span>{' '}
               posts found
             </p>
