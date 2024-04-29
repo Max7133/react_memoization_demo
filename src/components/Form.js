@@ -1,4 +1,4 @@
-import { useState, memo } from 'react';
+import { useState } from 'react';
 
 // Form to Add a Post
 const Form = ({ onAddPost }) => {
@@ -49,4 +49,4 @@ const Form = ({ onAddPost }) => {
   );
 };
 
-export default memo(Form);
+export default Form;

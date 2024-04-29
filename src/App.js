@@ -8,16 +8,14 @@ const App = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentTime, setCurrentTime] = useState(new Date());
   const [addPosts, setAddPosts] = useState(() =>
-    Array.from({ length: 20 }, () => ({
+    Array.from({ length: 5 }, () => ({
       ...generateRandomPost(),
       createdAt: new Date(),
     }))
   );
 
-  // added additional useState for the 10000 expanded posts
+  // initialize state to track the number of posts
   const [numberOfPosts, setNumberOfPosts] = useState(addPosts.length);
-
-  //console.log(useState(addPosts.length));
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -36,11 +34,13 @@ const App = () => {
       `${post.title} ${post.body}`
         .toLowerCase()
         .includes(searchTerm.toLowerCase())
-  ); */
+  );
+ */
 
   ///////////////////// MEMOIZED 1/4 ///////////////////////
-  // Memoizing "results" Array === if "addPosts" and "searchTerm" remain the same, results won't change, and the posts prop passed to PostsList.js won't change.
-  // Therefore after memoization, PostsList.js won't re-render every second App.js re-renders because of "setCurrentTime".
+  // Memoizing "results" Array ensures it only updates when "addPosts" or "searchTerm" change, preventing unnecessary re-renders of "PostsList.js".
+  // Therefore, PostsList.js won't re-render every time "setCurrentTime" triggers re-renders in App.js.
+  // [addPosts, searchTerm] Recalculate the "results" only if "addPosts" or "searchTerm" change.
 
   const results = useMemo(() => {
     return addPosts.filter(
@@ -50,14 +50,14 @@ const App = () => {
           .toLowerCase()
           .includes(searchTerm.toLowerCase())
     );
-  }, [addPosts, searchTerm]); // will recalculate the result only if addPosts or searchTerm change.
+  }, [addPosts, searchTerm]); // will recalculate the "results" only if "addPosts" or "searchTerm" change.
 
   ////////////////////////////////////////////////////////////
 
   /////////////////// NOT MEMOIZED 2/4 ///////////////////////
   // Function to handle adding a custom post
 
-  /*   const handleAddCustomPost = (customPost) => {
+  const handleAddCustomPost = (customPost) => {
     setAddPosts((prevPosts) => [
       {
         ...customPost,
@@ -66,19 +66,19 @@ const App = () => {
       ...prevPosts,
     ]);
 
-    setNumberOfPosts((prev) => prev + 1); // add + 1 for every custom post 
-  }; */
+    setNumberOfPosts((prev) => prev + 1); // add + 1 for every custom post
+  };
 
   ////////////////////////////////////////////////////////////
 
-  ///////////////////// MEMOIZED 2/4 /////////////////////////
+  ///////////////// MEMOIZED 2/4 (NOT NEEDED) ////////////////
   // Every time App.js re-renders because of setCurrentTime] = useState(new Date()), a new function reference for handleAddCustomPost is created.
   // If Form.js receives this new function reference, therefore, it triggers a re-render of Form.js even if its props haven't changed.
   // Memoized "handleAddCustomPost" + wrapping Form.js in "memo" won't get Form.js re-rendered after every second when the App.js gets re-rendered
   // Form.js will now only re-render after typing in the "title", "body" of the post and submitting the post because of State & Props change.
 
   // Function to handle adding a custom post
-  const handleAddCustomPost = useCallback(
+  /*   const handleAddCustomPost = useCallback(
     (customPost) => {
       setAddPosts((prevPosts) => [
         {
@@ -87,10 +87,9 @@ const App = () => {
         },
         ...prevPosts,
       ]);
-      setNumberOfPosts((prev) => prev + 1); // add + 1 for every custom post
     },
-    [] // I don't need "setAddPosts" and "setNumberOfPosts" in the dependency Array, because these state setter functions are stable between renders
-  );
+    [] // Omitting "setAddPosts" from the dependency array because the state setter functions are stable between renders
+  ); */
 
   ////////////////////////////////////////////////////////////
 
@@ -98,17 +97,18 @@ const App = () => {
 
   /*   const expandPosts = () => ({
     render: false,
-    title: 'Show all posts',
+    title: <span className="text-l font-bold">Entire Post Collection</span>,
   }); */
 
   ////////////////////////////////////////////////////////////
 
   ///////////////////// MEMOIZED 3/4 /////////////////////////
-  // Memoizing "expandPosts", when "render" is set to "true", prevents the application of recreating the "expandPosts" Object by avoing the recreation of the 10,000 elements every second because of App.js "setCurrentTime()"
+  // Memoizing "expandPosts" prevents the recreation of the function that returns an object.
+  // This avoids recreating the 10,000 elements every second due to the "setCurrentTime()" function in App.js.
 
   const expandPosts = useMemo(
     () => ({
-      render: false,
+      render: false, // true - will render all 10,000 posts, false - will render 5 initial posts
       title: <span className="text-l font-bold">Entire Post Collection</span>,
     }),
     [] // ensures that this memoized Object is created only once
@@ -125,8 +125,8 @@ const App = () => {
   ///////////////////////////////////////////////////////////
 
   ///////////////////// MEMOIZED 4/4 ////////////////////////
-  // handleAllPostsToggle is recreated on every render in App.js due to functions like setCurrentTime(), and since it's being passed down as a prop to the ShowAllPosts.js component,
-  // without using useCallback(), it breaks the memoization of the expandPosts object above, causing it to render all 10,000 elements every second.
+  // The handleAllPostsToggle function is recreated on every render in App.js due to functions like setCurrentTime(), and since it's being passed down as a prop to the ShowAllPosts.js component,
+  // without using useCallback(), it breaks the memoization of the "expandPosts" object above, causing it to render all 10,000 elements every second.
 
   const handleAllPostsToggle = useCallback(
     (newPostsCount) => {
@@ -150,9 +150,9 @@ const App = () => {
             <p className="text-l font-bold mb-2">
               There are{' '}
               <span className="text-orange-600 text-l font-bold">
-                {numberOfPosts || results.length}
+                {numberOfPosts + results.length || results.length}
               </span>{' '}
-              posts found
+              posts shown
             </p>
             <input
               className="border rounded-md py-2 px-3 mt-4 focus:outline-none focus:border-orange-500"
