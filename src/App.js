@@ -65,8 +65,6 @@ const App = () => {
       },
       ...prevPosts,
     ]);
-
-    setNumberOfPosts((prev) => prev + 1); // add + 1 for every custom post
   };
 
   ////////////////////////////////////////////////////////////
